@@ -210,7 +210,7 @@ pub struct Function {
     arg_self: Option<String>,
 
     /// Function arguments
-    args: Vec<Field>,
+    args: Vec<Argument>,
 
     /// Return type
     ret: Option<Type>,
@@ -229,6 +229,16 @@ pub struct Function {
 
     /// Whether or not this function is `async` or not
     r#async: bool,
+}
+
+/// Defines an argument for a function definition
+#[derive(Debug, Clone)]
+pub struct Argument {
+    /// Argument name
+    name: String,
+
+    /// Argument type
+    ty: Type,
 }
 
 /// Defines a code block. This is used to define a function body.
@@ -1688,14 +1698,9 @@ impl Function {
     where
         T: Into<Type>,
     {
-        self.args.push(Field {
+        self.args.push(Argument {
             name: name.to_string(),
             ty: ty.into(),
-            // While a `Field` is used here, both `documentation`
-            // and `annotation` does not make sense for function arguments.
-            // Simply use empty strings.
-            documentation: Vec::new(),
-            annotation: Vec::new(),
         });
 
         self
