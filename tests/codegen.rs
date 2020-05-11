@@ -42,6 +42,24 @@ struct Foo {
 }
 
 #[test]
+fn struct_with_public_field() {
+    let mut scope = Scope::new();
+    let mut struct_ = Struct::new("Foo");
+    struct_.vis("pub");
+    let mut field = Field::new("one", "usize");
+    field.vis("pub");
+    struct_.push_field(field);
+    scope.push_struct(struct_);
+
+    let expect = r#"
+pub struct Foo {
+    pub one: usize,
+}"#;
+    
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
 fn single_struct_documented_field() {
     let mut scope = Scope::new();
 

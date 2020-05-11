@@ -141,6 +141,9 @@ pub struct Field {
     /// Field type
     ty: Type,
 
+    /// Field visibility
+    vis: Option<String>,
+
     /// Field documentation
     documentation: Vec<String>,
 
@@ -1353,9 +1356,16 @@ impl Field {
         Field {
             name: name.into(),
             ty: ty.into(),
+            vis: None,
             documentation: Vec::new(),
             annotation: Vec::new(),
         }
+    }
+
+    /// Set field's visibility
+    pub fn vis(&mut self, vis: &str) -> &mut Self {
+        self.vis = Some(vis.to_string());
+        self
     }
 
     /// Set field's documentation.
@@ -1395,6 +1405,7 @@ impl Fields {
         self.push_named(Field {
             name: name.to_string(),
             ty: ty.into(),
+            vis: None,
             documentation: Vec::new(),
             annotation: Vec::new(),
         })
@@ -1433,6 +1444,9 @@ impl Fields {
                             for ann in &f.annotation {
                                 write!(fmt, "{}\n", ann)?;
                             }
+                        }
+                        if let Some(vis) = &f.vis {
+                            write!(fmt, "{} ", vis)?;
                         }
                         write!(fmt, "{}: ", f.name)?;
                         f.ty.fmt(fmt)?;
@@ -1522,6 +1536,7 @@ impl Impl {
         self.assoc_tys.push(Field {
             name: name.to_string(),
             ty: ty.into(),
+            vis: None,
             documentation: Vec::new(),
             annotation: Vec::new(),
         });
@@ -1694,6 +1709,7 @@ impl Function {
             // While a `Field` is used here, both `documentation`
             // and `annotation` does not make sense for function arguments.
             // Simply use empty strings.
+            vis: None,
             documentation: Vec::new(),
             annotation: Vec::new(),
         });
